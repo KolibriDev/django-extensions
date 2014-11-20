@@ -5,6 +5,7 @@ import six
 import operator
 from six.moves import reduce
 
+frmo django import VERSION as django_version
 from django.http import HttpResponse, HttpResponseNotFound
 from django.conf import settings
 from django.db import models
@@ -54,13 +55,15 @@ class ForeignKeyAutocompleteAdmin(ModelAdmin):
 
     def get_urls(self):
         from django.conf.urls import patterns, url
+        from django import VERSION as version
 
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
+        module_name = self.model._meta.model_name if django_version >= (1, 7) else self.model._meta.module_name
 
-        info = self.model._meta.app_label, self.model._meta.module_name
+        info = self.model._meta.app_label, module_name
 
         urlpatterns = patterns('', url(r'foreignkey_autocomplete/$', wrap(self.foreignkey_autocomplete), name='%s_%s_autocomplete' % info))
         urlpatterns += super(ForeignKeyAutocompleteAdmin, self).get_urls()

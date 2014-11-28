@@ -5,7 +5,7 @@ import six
 import operator
 from six.moves import reduce
 
-frmo django import VERSION as django_version
+from django import VERSION as django_version
 from django.http import HttpResponse, HttpResponseNotFound
 from django.conf import settings
 from django.db import models
